@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact Form</title>
+
+  <!--my stylesheets-->
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="formStyles.css">
+</head>
+<body>
+  <ul id="menu">
+    <li id="loginOption"><a href=login.html>Login</a></li>
+    <li id="contactOption"><a href=contact.html>Contact</a></li>
+    <li id="accountOption"><a href=account.html>Account</a></li>
+  </ul>
+
+  <h1>Contact Us</h1>
+
+  <form id="contactForm">
+    <fieldset>
+      <label for="emailInput">*Email:</label>
+      <input type="email" id="emailInput" placeholder="Enter Email" required>
+      <label for="nameInput">*Name:</label>
+      <input type="text" id="nameInput" placeholder="First and last name" required>
+      <textarea id="messageInput" placeholder="Enter Message" required></textarea>
+      <input id=contactSubmit type="submit" value="Send Email"/>
+    </fieldset>
+  </form>
+
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick.min.js"></script>
+  <script src= "https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script> 
+  <script src= "https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script>
+  
+  <script src="main.js"></script>
+  <script>
+    $('#contactSubmit').click(function(){
+      const name = $('#nameInput').val();
+      const email = $('#emailInput').val();
+      const message = $('#messageInput').val();
+      if(name, email, message) {
+        $.ajax({
+          type: "POST",
+          url: "http://localhost:3000/contact",
+          dataType: "json",
+          contentType: "application/json",
+          data: JSON.stringify({ name, email, message }),
+          success: function (result) {
+                  alert(result.message);
+          },
+          error: function (xhr,status,error) {
+                  alert(error);
+          },
+        });
+      }
+
+    });
+  </script>
+</body>
+</html>

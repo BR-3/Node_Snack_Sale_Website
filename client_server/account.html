@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Account</title>
+
+  <!--my stylesheets-->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <ul id="menu">
+        <li id="loginOption"><a href=login.html>Login</a></li>
+        <li id="contactOption"><a href=contact.html>Contact</a></li>
+        <li id="accountOption"><a href=account.html>Account</a></li>
+    </ul>
+
+  <h1>Account Information</h1>
+  <ul id="dataList"></ul>
+
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick.min.js"></script>
+  <script src= "https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script> 
+  <script src= "https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script>
+  
+  <script src="main.js"></script>
+  <script>
+    $.ajax({
+        type: "GET",
+        url: "http://localhost:3000/account",
+        success: function (result) {
+                //clear old data
+                $("#dataList").html("");
+                //put results into dataDiv
+                for(i=0;i<result.length;i++)
+                  $("#dataList").html($("#dataList").html()+result[i].name+"="+result[i].zip+"<br>");
+          },
+          error: function (xhr,status,error) {
+                  alert(error);
+          
+          },
+
+    });
+
+        // data.forEach(item => {
+        //   const li = document.createElement('li');
+        //   li.textContent = item;
+        //   dataList.appendChild(li);
+        // });
+  </script>
+</body>
+</html>

@@ -1,0 +1,86 @@
+div.formRow {
+    display: flex;
+    flex-flow: row wrap;
+    margin: 7px 0;
+}
+
+div.formRow >* {
+    flex: 1 1 150px;
+}
+
+form#validation, form#contactForm {
+    display: flex;
+    flex-flow: row wrap;
+    width: 50%;
+    max-width: 650px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+form#contactForm {
+    display: block;
+}
+
+form#validation > fieldset, form#contactForm > fieldset {
+    background-color: #edeeed;
+    border-radius: 20px;
+    flex: 1 1 300px;
+    font-size: 0.85em;
+    padding: 25px;
+    margin: 10px;
+}
+
+#address {
+    display: flex;
+    flex-flow: row wrap;
+}
+
+/* Spinner Styles */
+div.formRow > input#hobby {
+    flex: 50px;
+}
+
+/*text area styles*/
+select#hobby {
+    block-size: 9em;
+    display: flex;
+    flex-direction: row;
+    flex-flow: wrap;
+    align-items: center;
+    clear: left;
+}
+
+/* Form Button Styles */
+div#buttons {
+    text-align: center;
+    width: 100%;
+}
+
+/* Text Area Styles */
+textarea {
+    margin-top: 10px;
+    height: 200px auto;
+    width: 95%;
+    clear: left;
+}
+ div#choice {
+    clear: both;
+ }
+
+input[type='submit'], input[type='reset'] {
+    font-size: 1.2em;
+    padding: 8px;
+    margin: 0 15px 0 15px;
+    background-color: black;
+    border-radius: 10px;
+    color:#ffffff;
+}
+
+.buttons {
+    width: 100%;
+    text-align: center;
+}
+
+#messageInput {
+    height: 90px;
+}
