@@ -120,15 +120,13 @@
                     const email = $('#mail').val();
                     const chinuch = $('#chinuch').val();
                     const confCode = $('#confCode').val();
-                    //console.log(name, streetNumber, streetName, city, state, zip, phone, email, chinuch, confCode);
-                    alert('test');
                     
                     $.ajax({
                         type: "POST",
                         url: "http://localhost:3000/login",
                         dataType: "json",
                         contentType: "application/json",
-                        data: JSON.stringify({name: name, streetNumber: streetNumber, city: city, state: state, 
+                        data: JSON.stringify({name: name, streetNumber: streetNumber, streetName: streetName, city: city, state: state, 
                         zip: zip, phone: phone, email: email, chinuch: chinuch, confCode: confCode}),
                         success: function (result) {
                             alert(result.message);
@@ -137,8 +135,6 @@
                             alert('error '+error);
                         },
                     });
-
-                    alert('test 2');
                     
                 });
               </script>

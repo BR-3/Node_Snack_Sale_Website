@@ -67,7 +67,7 @@ textarea {
     clear: both;
  }
 
-input[type='submit'], input[type='reset'] {
+input[type='button'], input[type='reset'], input[type='submit'] {
     font-size: 1.2em;
     padding: 8px;
     margin: 0 15px 0 15px;

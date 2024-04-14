@@ -25,7 +25,7 @@ $(document).ready(function() {
             $("welcomeMessage").text('');
         }
     });    
-
+/*
     // use onclick to validate user input
     $("#loginSubmit").click(function() {
         $("#validation").validate({
@@ -49,7 +49,7 @@ $(document).ready(function() {
             },
           });
       });
-
+*/
     // modify css
     $('#loginSubmit, #contactSubmit, #reset').mouseenter(function() {
         $(this).css("color", "rgb(224, 190, 255)");

@@ -32,8 +32,12 @@
                 //clear old data
                 $("#dataList").html("");
                 //put results into dataDiv
-                for(i=0;i<result.length;i++)
-                  $("#dataList").html($("#dataList").html()+result[i].name+"="+result[i].zip+"<br>");
+                var i = result.length - 1;
+                  $("#dataList").html($("#dataList").html()+result[i].name +"<br>"+ 
+                        result[i].streetNumber + " " + result[i].streetName + "<br>" +
+                        result[i].city + ", " + result[i].state +" " +  result[i].zip+"<br>" +
+                        result[i].email + "<br>" + result[i].phone + "<br>" +
+                        result[i].chinuch + "<br>" + result[i].confCode);
           },
           error: function (xhr,status,error) {
                   alert(error);
@@ -41,12 +45,6 @@
           },
 
     });
-
-        // data.forEach(item => {
-        //   const li = document.createElement('li');
-        //   li.textContent = item;
-        //   dataList.appendChild(li);
-        // });
   </script>
 </body>
 </html>
