@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 
+import bcrypt from 'bcrypt';
+
 // Connect to MongoDB database
 mongoose.connect('mongodb://localhost/MCOO275',)
 .then(() => console.log('Connected to MongoDB'))
@@ -34,7 +36,7 @@ const newUser = new User({
     phone: "7189562345",
     email: "brodkin@gmail.com",
     chinuch: "Kollel",
-    confCode: "11111"
+    confCode: await bcrypt.hash("11111",10)
 });
 newUser.save()
     .then((user) => {

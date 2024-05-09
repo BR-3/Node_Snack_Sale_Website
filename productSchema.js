@@ -1,7 +1,11 @@
 const mongoose = require('mongoose');
 
 mongoose.connect('mongodb://localhost:27017/MCOO275',)
-    .then(() => console.log('Connected to MongoDB'))
+    .then(() => {
+        console.log('Connected to MongoDB');
+        // Get the database object from the mongoose connection
+        db = mongoose.connection.db;
+    })
     .catch(err => console.error('Error connecting to MongoDB:', err));
 
 // product schema

@@ -63,3 +63,16 @@ ul.slick-dots {
     text-shadow: 1px 1px 2px gray;
     overflow: hidden;
 }
+
+#snackDataList {
+    display: flex;
+    flex-wrap: wrap; /* Allow items to wrap to next line if needed */
+    /* Optional: Set width and gap between items */
+  }
+  
+#snackDataList div {
+    flex: 1 0 calc(25% - 50px); /* Set width to 1/3rd with some margin */
+    margin: 25px;
+    text-align: center; /* Center text within each item */
+  }
+  
