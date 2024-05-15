@@ -25,8 +25,7 @@ $(document).ready(function() {
             $("welcomeMessage").text('');
         }
     });    
-/*
-    // use onclick to validate user input
+// use onclick to validate user input
     $("#loginSubmit").click(function() {
         $("#validation").validate({
             rules: {
@@ -49,13 +48,13 @@ $(document).ready(function() {
             },
           });
       });
-*/
+
     // modify css
-    $('#loginSubmit, #contactSubmit, #reset').mouseenter(function() {
+    $('#loginSubmit, #contactSubmit, #reset, #updateSubmit, #chooseUpdate').mouseenter(function() {
         $(this).css("color", "rgb(224, 190, 255)");
     });
 
-    $('#loginSubmit, #contactSubmit, #reset').mouseleave(function() {
+    $('#loginSubmit, #contactSubmit, #reset, #updateSubmit, #chooseUpdate').mouseleave(function() {
         $(this).css("color", "white");
     });
     

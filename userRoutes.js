@@ -15,7 +15,7 @@ mongoose.connect('mongodb://localhost/MCOO275',)
 router.post('/login', async (req, res) => {
     const { username, confCode } = req.body;
     const user = await findUserByName(username);
-    if (user && await bcrypt.compare(confCode, user.confCode)) {
+    if (user && confCode == user.confCode ) {
         const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
         res.json({ token });
     } else {

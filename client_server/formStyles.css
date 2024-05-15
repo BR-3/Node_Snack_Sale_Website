@@ -8,7 +8,7 @@ div.formRow >* {
     flex: 1 1 150px;
 }
 
-form#validation, form#contactForm {
+form#validation, form#contactForm, form#updateInfoForm form#checkZipForm{
     display: flex;
     flex-flow: row wrap;
     width: 50%;
@@ -21,7 +21,8 @@ form#contactForm {
     display: block;
 }
 
-form#validation > fieldset, form#contactForm > fieldset {
+form#validation > fieldset, form#contactForm > fieldset, 
+    form#updateInfoForm >fieldset, form#checkZipForm > fieldset {
     background-color: #edeeed;
     border-radius: 20px;
     flex: 1 1 300px;

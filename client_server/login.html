@@ -28,78 +28,55 @@
             </ul>
             <h1>Please Validate Your Access Information</h1>
 
-            <h3  id=welcomeMessage></h3>
+            <div id="login">
+                <h3  id=welcomeMessage></h3>
 
-            <form id="validation">
-                <fieldset>
+                <form id="validation">
+                    <fieldset>
 
-                    <div class="formRow">
-                        <label for="userName">*Name</label>
-                        <input name="userName" id="userName" type="text" placeholder="First and Last Name" required/>
+                        <div class="formRow">
+                            <label for="mail">*E-mail</label>
+                            <input name="userEmail" id="mail" type="email" placeholder="abc@example.com" required>
+                        </div>
+
+                        <div class="formRow">
+                            <label for="confCode">*Please enter confirmation code from email.</label>
+                            <input name="confirmationCode" id="confCode" type="text" placeholder="FHSLEIC" required/>
+                        </div>
+                    </fieldset>
+
+                    <div id="buttons">
+                        <input id="loginSubmit" type="button" value="Validate"/>
+                        <input id="reset" type="reset" value="Cancel"/>
                     </div>
 
-                    <div class="formRow">
-                        <label>*Address</label>
-                        <div id="address">                            
-                            <input name="streetNumber" id="streetNumber" type="number" placeholder="1234" required>
-                            <input name="streetName" id="streetName" type="text" placeholder="Main Street" required>
-                            <input name="city" id="city" type="text" placeholder="Newark" required>
-                            <input name="state" id="state" type="text" placeholder="NJ" required>
-                            <input name="zip" id="zip" type="number" placeholder="12345" required>
+                </form>
+            
+                <div class="js-slick-carousel">
+                    <div class="js-slide" style="background-color: rgb(224, 190, 255);">
+                        <div class="space">
+                            <h3 class="h1">Reduced price food sales for families in Chinuch or Kollel</h3>
                         </div>
                     </div>
-
-                    <div class="formRow">
-                        <label for="phone">*Phone Number</label>
-                        <input name="userPhone" id="phone" type="tel" placeholder="(***)***-****" required/>
+                    <div class="js-slide" style="background-color:aliceblue;">
+                        <div class="space">
+                            <h3 class="h1">Doing our part to support Torah</h3>
+                        </div>
                     </div>
-
-                    <div class="formRow">
-                        <label for="mail">*E-mail</label>
-                        <input name="userEmail" id="mail" type="email" placeholder="abc@example.com" required>
-                    </div>
-
-                    <div class="formRow">
-                        <label for="chinuch">*Are you a kollel or chinuch family?</label>
-                        <input name="chinuch" id="chinuch" type="text" list="chinuchOrKollel" placeholder="Please select one" required>
-                        <datalist id="chinuchOrKollel">
-                            <option value="Full time kollel"/>
-                            <option value="Part time kollel"/>
-                            <option value="Rebbi"/>
-                            <option value="Morah"/>
-                            <option value="Other"/>
-                        </datalist>
-                    </div>
-                    <div class="formRow">
-                        <label for="confCode">*Please enter confirmation code from email.</label>
-                        <input name="confirmationCode" id="confCode" type="text" placeholder="FHSLEIC" required/>
-                    </div>
-                </fieldset>
-
-                <div id="buttons">
-                    <input id="loginSubmit" type="button" value="Validate"/>
-                    <input id="reset" type="reset" value="Cancel"/>
-                </div>
-
-            </form>
-            
-            <div class="js-slick-carousel">
-                <div class="js-slide" style="background-color: rgb(224, 190, 255);">
-                    <div class="space">
-                        <h3 class="h1">Reduced price food sales for families in Chinuch or Kollel</h3>
-                    </div>
-                </div>
-                <div class="js-slide" style="background-color:aliceblue;">
-                    <div class="space">
-                        <h3 class="h1">Doing our part to support Torah</h3>
-                    </div>
-                </div>
-                <div class="js-slide" style="background-color: rgb(255, 217, 170);">
-                    <div class="space">
-                        <h3 class="h1">Showing the world what we <em>really</em> value</h3>
+                    <div class="js-slide" style="background-color: rgb(255, 217, 170);">
+                        <div class="space">
+                            <h3 class="h1">Showing the world what we <em>really</em> value</h3>
+                        </div>
                     </div>
                 </div>
             </div>
+
+            <div id="logout">
+                <h3>You are logged in!</h3>
+                <input id="logoutSubmit" type="button" value="Validate"/>
+
+            </div>
+            
 
             <!--Slick and jquery javascript sources-->
             <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
@@ -110,16 +87,9 @@
             <!--my javascript scripts-->
             <script src="main.js"></script>
             <script>
+                $('#logout').hide();
                 $('#loginSubmit').click(function() {
-                    const name=$('#userName').val();
-                    const streetNumber = $('#streetNumber').val();
-                    const streetName = $('#streetName').val();
-                    const city = $('#city').val();
-                    const state = $('#state').val();
-                    const zip = $('#zip').val();
-                    const phone = $('#phone').val();
                     const email = $('#mail').val();
-                    const chinuch = $('#chinuch').val();
                     const confCode = $('#confCode').val();
                     
                     $.ajax({
@@ -127,10 +97,14 @@
                         url: "http://localhost:3000/login",
                         dataType: "json",
                         contentType: "application/json",
-                        data: JSON.stringify({name: name, streetNumber: streetNumber, streetName: streetName, city: city, state: state, 
-                        zip: zip, phone: phone, email: email, chinuch: chinuch, confCode: confCode}),
+                        data: JSON.stringify({email: email, confCode: confCode}),
                         success: function (result) {
-                            alert(result.message);
+                            alert(result);
+                            alert("Logged in!");
+                            localStorage.setItem('jwtToken', result.token);
+                            $('#login').hide();
+                            $('#logout').show();
+                            showProfile();
                         },
                         error: function (xhr, status, error) {
                             alert('error '+error);
@@ -138,6 +112,32 @@
                     });
                     
                 });
+
+                $('#logoutSubmit').click(function() {
+                    $.ajax({
+                        type: "POST",
+                        url: "http://localhost:3000/logout",
+                        dataType: "json",
+                        contentType: "application/json",
+                        data: JSON.stringify({email: email, confCode: confCode}),
+                        success: function (result) {
+                            alert(result);
+                            alert("Logged in!");
+                            localStorage.setItem('jwtToken', result.token);
+                            $('#login').hide();
+                            $('#logout').show();
+                            showProfile();
+                        },
+                        error: function (xhr, status, error) {
+                            alert('error '+error);
+                        },
+                    });
+                });
+
+                function showProfile()
+                {
+                        window.location.href="account.html";
+                }
               </script>
             
         </header>

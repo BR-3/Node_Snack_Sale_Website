@@ -7,6 +7,7 @@
 
   <!--my stylesheets-->
   <link rel="stylesheet" href="styles.css">
+  <link rel = "stylesheet" href="formStyles.css">
 </head>
 <body>
     <ul id="menu">
@@ -16,8 +17,65 @@
         <li id="accountOption"><a href=account.html>Account</a></li>
     </ul>
 
-  <h1>Account Information</h1>
-  <ul id="dataList"></ul>
+    <h1>Account Information</h1>
+
+    <div id="userInformation">
+      <ul id="dataList"></ul>
+      <input id="chooseUpdate" type="button" value="Update My Information"/>
+    </div>
+  
+    <div id="updateUserInfo">
+      <form id="updateInfoForm">
+        <fieldset>
+            <div class="formRow">
+                <label for="userName">Name</label>
+                <input name="userName" id="userName" type="text" placeholder="First and Last Name" required/>
+            </div>
+
+            <div class="formRow">
+                <label>Address</label>
+                <div id="address">                            
+                    <input name="streetNumber" id="streetNumber" type="number" placeholder="1234" required>
+                    <input name="streetName" id="streetName" type="text" placeholder="Main Street" required>
+                    <input name="city" id="city" type="text" placeholder="Newark" required>
+                    <input name="state" id="state" type="text" placeholder="NJ" required>
+                    <input name="zip" id="zip" type="number" placeholder="12345" required>
+                </div>
+            </div>
+
+            <div class="formRow">
+                <label for="phone">Phone Number</label>
+                <input name="userPhone" id="phone" type="tel" placeholder="(***)***-****" required/>
+            </div>
+
+            <div class="formRow">
+                <label for="mail">E-mail</label>
+                <input name="userEmail" id="mail" type="email" placeholder="abc@example.com" required>
+            </div>
+
+            <div class="formRow">
+                <label for="chinuch">Are you a kollel or chinuch family?</label>
+                <input name="chinuch" id="chinuch" type="text" list="chinuchOrKollel" placeholder="Please select one" required>
+                <datalist id="chinuchOrKollel">
+                    <option value="Full time kollel"/>
+                    <option value="Part time kollel"/>
+                    <option value="Rebbi"/>
+                    <option value="Morah"/>
+                    <option value="Other"/>
+                </datalist>
+            </div>
+            <div class="formRow">
+                <label for="confCode">Confirmation Code</label>
+                <input name="confirmationCode" id="confCode" type="text" readonly/>
+            </div>
+        </fieldset>
+
+        <div id="buttons">
+            <input id="updateSubmit" type="button" value="Update"/>
+            <input id="reset" type="button" value="Cancel"/>
+        </div>
+      </form>
+    </div>
 
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.9.0/slick.min.js"></script>
@@ -26,26 +84,74 @@
   
   <script src="main.js"></script>
   <script>
+    $("#updateUserInfo").hide();
+
+    $('#chooseUpdate').click(function() {
+      $("#updateUserInfo").show();
+      $("#userInformation").hide();
+    });
+
+    $("#updateSubmit").click(function() {
+      $("#updateUserInfo").hide();
+      $("#userInformation").show();
+      $.ajax({
+        type: "POST",url: "http://localhost:3000/update",
+        contentType: "application/json",
+        data: JSON.stringify(userData),
+        success: function() {
+          alert('Information has been updated!');
+        }
+      });
+    });
+
+    $("#reset").click(function() {
+      getUserInfo();
+    });
+
     $.ajax({
-        type: "GET",
+        type: "POST",
+        dataType: "jsonp",
+        //contentType:"application/json",
         url: "http://localhost:3000/account",
-        success: function (result) {
+        headers: {'Authorization': 'Bearer ' + localStorage.getItem('jwtToken')},
+            
+        success: function (resultd) {
                 //clear old data
+                console.log('success');
                 $("#dataList").html("");
+                console.log("datalist is cleared");
                 //put results into dataDiv
-                var i = result.length - 1;
-                  $("#dataList").html($("#dataList").html()+result[i].name +"<br>"+ 
-                        result[i].streetNumber + " " + result[i].streetName + "<br>" +
-                        result[i].city + ", " + result[i].state +" " +  result[i].zip+"<br>" +
-                        result[i].email + "<br>" + result[i].phone + "<br>" +
-                        result[i].chinuch + "<br>" + result[i].confCode);
+               // var i = result.length - 1;
+               result=JSON.parse(resultd);
+                  $("#dataList").html($("#dataList").html()+result.name +"<br>"+ 
+                        result.streetNumber + " " + result.streetName + "<br>" +
+                        result.city + ", " + result.state +" " +  result.zip+"<br>" +
+                        result.email + "<br>" + result.phone + "<br>" +
+                        result.chinuch + "<br>" + result.confCode);
+                  getUserInfo();
           },
           error: function (xhr,status,error) {
-                  alert(error);
+            console.log(error);
+                  alert('123'+ error);
           
           },
 
     });
+
+
+
+    function getUserInfo() {
+      $("#userName").val(result.name);
+      $("#streetNumber").val(result.streetNumber);
+      $("#streetName").val(result.streetName);
+      $("#city").val(result.city);
+      $("#state").val(result.state);
+      $("#zip").val(result.zip);
+      $("#phone").val(result.phone);
+      $("#mail").val(result.email);
+      $("#chinuch").val(result.chinuch);
+      $("#confCode").val(result.confCode);
+    }
   </script>
 </body>
 </html>
