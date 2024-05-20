@@ -27,9 +27,10 @@
       <legend>We Ship!</legend>
       <label for="zipEntry">Please enter your zip code to see if you are eligible</label>
       <input type="text" id="zipEntry" placeholder="12345" required>
-      <button id="searchButton">Search</button>
+      <input id="searchButton" type="button" value="Search">
+      <div id="response"></div>
     </fieldset>
-    <div id="response"></div>
+    
   </form>
 
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
@@ -38,8 +39,44 @@
   <script src= "https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script>
   
   <script src="main.js"></script>
-  <script src="zipCheck.js"></script>
+  <!-- <script src="zipCheck.js"></script> -->
   <script>
+    $("#searchButton").click(function () {
+      const enteredLocation = $("#zipEntry").val();
+      if(enteredLocation) {
+        const url = `http://api.zippopotam.us/us/` + enteredLocation
+        console.log(url);
+        
+        $.ajax({
+          url: url,
+          type: 'GET',
+          dataType: 'json',
+          success: function(data) {
+            var responseMessage;
+            const state = data.places[0].state;
+            console.log(state);
+            if(!data) {
+              responseMessage='City not found.';
+            } else {
+              if(state == 'New York' || state == 'New Jersey') {
+                responseMessage = 'We can ship to you!'
+              } else {
+                responseMessage = 'Shipping is unavailable for your location.'
+              }
+            }
+            $('#response').text(responseMessage);
+          },
+          error: function(error) {
+            console.log('something went wrong'+ error.message);
+          }
+        });
+        
+      } else {
+        alert('Please enter your zip code.');
+      }
+    });
+   
+
     $.ajax({
       type: "GET",
       url: "http://localhost:3000/snacks",

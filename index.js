@@ -2,38 +2,30 @@ const express = require('express');
 const nodemailer=require('nodemailer');
 const cors = require("cors");
 const bodyparser = require("body-parser");
-const mongoose = require('mongoose');
+//const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
+const { MongoClient, ObjectId } =require('mongodb');
 
-// import transactionRoutes from "./transactionRoutes.js";
-// import userRoutes from "./userRoutes.js";
-// import dotenv from 'dotenv';
 
-mongoose.connect('mongodb://localhost:27017/MCOO275',)
-  .then(() => {
-    console.log('Connected to MongoDB');
-    // Get the database object from the mongoose connection
-    db = mongoose.connection.db;
-  })
-    .catch(err => console.error('Error connecting to MongoDB:', err));
+const mclient=new MongoClient('mongodb://localhost:27017/MCOO275');
+mclient.connect();
+const db=mclient.db("MCOO275");
 
-// dotenv.config();
 const app = express();
 const PORT = 3000;
 
 app.use(express.json());
 app.use(cors());
 
-//let dataList = [];
-
-//const jwtsecret='xxxxx';
 const jwtsecret="bce50806518f053fcdb6c980fd4af40de1a8c300088d30ecf6818828bde34912a33f48765ca6ae0ec3bce50806518aaaaf8a20ab588a8cfbd64aad39b06bd596ac3f426da4d";
 
 // route to add data to internal list
 app.post('/login', async (req, res) => {
   const { email, confCode } = req.body;
-    const user = await findUserByName(email);
+    const user = await findUserByEmail(email);
+    console.log(user);
     if (user && confCode == user.confCode ) {
+      console.log ("matched user");
         const token = jwt.sign({ userId: user._id }, jwtsecret, { expiresIn: '1h' });
         res.json({ name: user.name, streetNumber: user.streetNumber, streetName: user.streetName,
           city: user.city, state: user.state, zip: user.zip, email: user.email, phone: user.phone, 
@@ -43,10 +35,23 @@ app.post('/login', async (req, res) => {
     }
 });
 
-async function findUserByName(email) {
-  let users=db.collection("users");
-  return await users.findOne({ email });
+async function findUserByEmail(email) {
+  let users= db.collection("users");
+  user = await users.findOne({ email });
+  console.log(user.email + "coming from finding function");
+  return user;
 }
+
+async function findUserById(id) {
+  let users= db.collection("users");
+  return await users.findOne({"_id":new ObjectId(id) });
+}
+
+async function findUserByConfCode(confCodeS) {
+  let users = db.collection("users");
+  return await users.findOne({confCode: confCodeS});
+}
+
 
 // route to retrieve the items from the database
 app.get("/snacks", async (req, res) => {
@@ -58,33 +63,32 @@ app.get("/snacks", async (req, res) => {
 
 // route to save data to database
 app.post('/update', async (req, res) => {
-  const { userName, streetNumber, streetName, city, state, zip, phone, mail, chinuch, confCode} = req.body;
+  const { name, streetNumber, streetName, city, state, zip, phone, email, chinuch, confCode} = req.body;
+  console.log('in update function');
+  console.log("name" + email);
   try {
-    await updateUser(userName, streetNumber, streetName, city, state, zip, phone, mail, chinuch, confCode)
+    const user = findUserById(email);
   } catch (error) {
     res.status(500).send(error.message);
   }
+
+  // try {
+  //   const user = findUserByConfCode(confCode.toString());
+  //   console.log(user.name);
+  //   // await updateUser(name, streetNumber, streetName, city, state, zip, phone, mail, chinuch, confCode)
+  // } catch (error) {
+  //   res.status(500).send(error.message);
+  // }
 });
 
-async function updateUser(userName, streetNumber, streetName, city, state, zip, phone, mail, chinuch, confCode) {
-  return await users.findOneAndUpdate({ userName, streetNumber, streetName, city, state, zip, phone, mail, chinuch, confCode });
+async function updateUser(name, streetNumber, streetName, city, state, zip, phone, mail, chinuch, confCode) {
+  return await users.findOneAndUpdate({ name, streetNumber, streetName, city, state, zip, phone, mail, chinuch, confCode });
 }
 
-// route to retrieve data from database
-app.post('/account', authenticate, async (req, res) => {
-  const userId = req.user.userId;  // Extracted from token
-  let users= await db.collection("users");
-    try {
-        const results = await users.findOne({userId  });
-        res.json(results);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-});
-
-
 async function authenticate(req, res, next) {
+  console.log(req.headers.authorization);
   const token = req.headers.authorization?.split(' ')[1];
+  console.log(token);
   if (!token) return res.status(401).json({ message: 'No token provided.' });
 
   try {
@@ -95,6 +99,14 @@ async function authenticate(req, res, next) {
       return res.status(403).json({ message: 'Failed to authenticate token.' });
   }
 }
+
+// route to retrieve data from database
+app.get('/account', authenticate, async (req, res) => {
+ const user=await findUserById(req.user.userId);
+ console.log(user);
+  res.json(user);
+});
+
 
 // route to handle contact form and send email
 app.post('/contact', (req, res) => {

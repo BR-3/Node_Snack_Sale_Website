@@ -29,32 +29,21 @@ $(document).ready(function() {
     $("#loginSubmit").click(function() {
         $("#validation").validate({
             rules: {
-              userName: "required",
-              streetNumber: "required",
-              streetName: "required",
-              city: "required",
-              state: "required",
-              zip: "required",
-              phone: {
-                required: true,
-                phoneUS: true
-              },
               mail: {
                 required: true,
                 email: true 
               },
-              chinuch: "required",
               confCode: "required"
             },
           });
       });
 
     // modify css
-    $('#loginSubmit, #contactSubmit, #reset, #updateSubmit, #chooseUpdate').mouseenter(function() {
+    $('#loginSubmit, #contactSubmit, #reset, #updateSubmit, #chooseUpdate, #searchButton, #logoutSubmit').mouseenter(function() {
         $(this).css("color", "rgb(224, 190, 255)");
     });
 
-    $('#loginSubmit, #contactSubmit, #reset, #updateSubmit, #chooseUpdate').mouseleave(function() {
+    $('#loginSubmit, #contactSubmit, #reset, #updateSubmit, #chooseUpdate, #searchButton, #logoutSubmit').mouseleave(function() {
         $(this).css("color", "white");
     });
     

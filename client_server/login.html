@@ -73,8 +73,7 @@
 
             <div id="logout">
                 <h3>You are logged in!</h3>
-                <input id="logoutSubmit" type="button" value="Validate"/>
-
+                <input id="logoutSubmit" type="button" value="Log out"/>
             </div>
             
 
@@ -88,51 +87,57 @@
             <script src="main.js"></script>
             <script>
                 $('#logout').hide();
-                $('#loginSubmit').click(function() {
-                    const email = $('#mail').val();
-                    const confCode = $('#confCode').val();
-                    
-                    $.ajax({
-                        type: "POST",
-                        url: "http://localhost:3000/login",
-                        dataType: "json",
-                        contentType: "application/json",
-                        data: JSON.stringify({email: email, confCode: confCode}),
-                        success: function (result) {
-                            alert(result);
-                            alert("Logged in!");
-                            localStorage.setItem('jwtToken', result.token);
-                            $('#login').hide();
-                            $('#logout').show();
-                            showProfile();
-                        },
-                        error: function (xhr, status, error) {
-                            alert('error '+error);
-                        },
-                    });
-                    
-                });
+                $('#login').show();
 
-                $('#logoutSubmit').click(function() {
-                    $.ajax({
-                        type: "POST",
-                        url: "http://localhost:3000/logout",
-                        dataType: "json",
-                        contentType: "application/json",
-                        data: JSON.stringify({email: email, confCode: confCode}),
-                        success: function (result) {
-                            alert(result);
-                            alert("Logged in!");
-                            localStorage.setItem('jwtToken', result.token);
-                            $('#login').hide();
-                            $('#logout').show();
-                            showProfile();
-                        },
-                        error: function (xhr, status, error) {
-                            alert('error '+error);
-                        },
+
+                function loggedIn() {
+                    // check if logged in or not  - can get token from local storage
+                    if(localStorage.getItem('jwtToken')) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+
+                if(loggedIn()) {
+                    $('#login').hide();
+                    $('#logout').show();
+
+                    $('#logoutSubmit').click(function() {
+                        localStorage.removeItem('jwtToken');
+                        alert('Logged Out!')
+                        $('#login').show();
+                        $('#logout').hide();
                     });
-                });
+
+                } else {
+                    $('#logout').hide();
+                    $('#login').show();
+
+                    $('#loginSubmit').click(function() {
+                        const email = $('#mail').val();
+                        const confCode = $('#confCode').val();
+                    
+                        $.ajax({
+                            type: "POST",
+                            url: "http://localhost:3000/login",
+                            dataType: "json",
+                            contentType: "application/json",
+                            data: JSON.stringify({email: email, confCode: confCode}),
+                            success: function (result) {
+                                alert("Logged in!");
+                                localStorage.setItem('jwtToken', result.token);
+                                $('#login').hide();
+                                $('#logout').show();
+                                showProfile();
+                            },
+                            error: function (xhr, status, error) {
+                                alert('error '+error);
+                            },
+                        });
+                    });
+                }
+
 
                 function showProfile()
                 {

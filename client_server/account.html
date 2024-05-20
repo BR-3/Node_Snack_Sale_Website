@@ -19,9 +19,13 @@
 
     <h1>Account Information</h1>
 
+    <h3 id="notLoggedInMessage">You are not logged in. Log in to view account details.</h3>
+
     <div id="userInformation">
       <ul id="dataList"></ul>
-      <input id="chooseUpdate" type="button" value="Update My Information"/>
+      <div class="buttons">
+        <input id="chooseUpdate" type="button" value="Update My Information"/>
+      </div>
     </div>
   
     <div id="updateUserInfo">
@@ -84,63 +88,85 @@
   
   <script src="main.js"></script>
   <script>
-    $("#updateUserInfo").hide();
-
-    $('#chooseUpdate').click(function() {
-      $("#updateUserInfo").show();
-      $("#userInformation").hide();
-    });
-
-    $("#updateSubmit").click(function() {
+    if(localStorage.getItem('jwtToken')) { //logged in
       $("#updateUserInfo").hide();
-      $("#userInformation").show();
+      $('#notLoggedInMessage').hide();
+      $('#userInformation').show();
+
       $.ajax({
-        type: "POST",url: "http://localhost:3000/update",
+        type: "GET",
+        // dataType: "jsonp",
         contentType: "application/json",
-        data: JSON.stringify(userData),
-        success: function() {
-          alert('Information has been updated!');
-        }
-      });
-    });
-
-    $("#reset").click(function() {
-      getUserInfo();
-    });
-
-    $.ajax({
-        type: "POST",
-        dataType: "jsonp",
-        //contentType:"application/json",
         url: "http://localhost:3000/account",
         headers: {'Authorization': 'Bearer ' + localStorage.getItem('jwtToken')},
-            
-        success: function (resultd) {
-                //clear old data
-                console.log('success');
+        dataType: "json",    
+        success: function (result) {
                 $("#dataList").html("");
-                console.log("datalist is cleared");
-                //put results into dataDiv
-               // var i = result.length - 1;
-               result=JSON.parse(resultd);
                   $("#dataList").html($("#dataList").html()+result.name +"<br>"+ 
                         result.streetNumber + " " + result.streetName + "<br>" +
                         result.city + ", " + result.state +" " +  result.zip+"<br>" +
                         result.email + "<br>" + result.phone + "<br>" +
                         result.chinuch + "<br>" + result.confCode);
-                  getUserInfo();
+                  getUserInfo(result);
           },
           error: function (xhr,status,error) {
             console.log(error);
-                  alert('123'+ error);
-          
           },
 
+      });
+
+      $('#chooseUpdate').click(function() {
+        $("#updateUserInfo").show();
+        $("#userInformation").hide();
+      });
+
+      $("#updateSubmit").click(function() {
+        $("#updateUserInfo").hide();
+        $("#userInformation").show();
+
+        const updatedUserData = {
+          name: $('#userName').val(),
+          streetNumber: $('#streetNumber').val(),
+          streetName: $('#streetName').val(),
+          city: $('#city').val(),
+          state: $('#state').val(),
+          zip: $('#zip').val(),
+          email: $('#mail').val(),
+          phone: $('#phone').val(),
+          chinuch: $('#chinuch').val(),
+          confCode: $('#confCode').val()
+        }
+        console.log(JSON.stringify(updatedUserData));
+        if(localStorage.getItem('jwtToken')){
+          $.ajax({
+            type: "POST",
+            url: "http://localhost:3000/update",
+            dataType: "json",
+            contentType: "application/json",
+            data: JSON.stringify(updatedUserData),
+            success: function() {
+              console.log('Information has been updated!');
+            }, error: function(error) {
+                  alert("update" +error);
+            }
+         });
+        } else {
+          alert('You are not authorized to complete this action');
+        }
+        
+      });
+    } else {
+        $('#userInformation').hide();
+        $('#updateUserInfo').hide();
+        $('#notLoggedInMessage').show();
+
+    }
+    $("#reset").click(function() {
+      getUserInfo();
     });
 
-
-
-    function getUserInfo() {
+    
+    function getUserInfo(result) {
       $("#userName").val(result.name);
       $("#streetNumber").val(result.streetNumber);
       $("#streetName").val(result.streetName);
