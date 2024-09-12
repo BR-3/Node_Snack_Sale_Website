@@ -47,11 +47,6 @@ async function findUserById(id) {
   return await users.findOne({"_id":new ObjectId(id) });
 }
 
-async function findUserByConfCode(confCodeS) {
-  let users = db.collection("users");
-  return await users.findOne({confCode: confCodeS});
-}
-
 
 // route to retrieve the items from the database
 app.get("/snacks", async (req, res) => {
@@ -66,24 +61,19 @@ app.post('/update', async (req, res) => {
   const { name, streetNumber, streetName, city, state, zip, phone, email, chinuch, confCode} = req.body;
   console.log('in update function');
   console.log("name" + email);
+
   try {
-    const user = findUserById(email);
+      let users = db.collection("users");
+      await users.findOneAndUpdate({confCode: confCode},
+         {$set: {name: name, streetNumber: streetNumber, 
+          streetName: streetName, city: city,
+      state: state, zip: zip, phone: phone, email: email,
+       chinuch: chinuch}});
   } catch (error) {
     res.status(500).send(error.message);
   }
-
-  // try {
-  //   const user = findUserByConfCode(confCode.toString());
-  //   console.log(user.name);
-  //   // await updateUser(name, streetNumber, streetName, city, state, zip, phone, mail, chinuch, confCode)
-  // } catch (error) {
-  //   res.status(500).send(error.message);
-  // }
 });
 
-async function updateUser(name, streetNumber, streetName, city, state, zip, phone, mail, chinuch, confCode) {
-  return await users.findOneAndUpdate({ name, streetNumber, streetName, city, state, zip, phone, mail, chinuch, confCode });
-}
 
 async function authenticate(req, res, next) {
   console.log(req.headers.authorization);
@@ -135,12 +125,10 @@ app.post('/contact', (req, res) => {
           console.log(`Message from ${name} - ${email}`);
           res.status(500).json({message: 'Failed to send email'});
         } else {
-          res.json({message: 'Email sent successfully'});
           console.log('Email sent: ' + info.response);
         }
       });
 })
-
 
 
 app.listen(PORT, () => {

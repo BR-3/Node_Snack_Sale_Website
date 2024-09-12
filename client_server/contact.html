@@ -42,20 +42,22 @@
       const email = $('#emailInput').val();
       const message = $('#messageInput').val();
       if(name, email, message) {
+        alert('Message sent!');
         $.ajax({
           type: "POST",
           url: "http://localhost:3000/contact",
           dataType: "json",
           contentType: "application/json",
           data: JSON.stringify({ name, email, message }),
-          success: function (result) {
-                  alert(result.message);
+          success: function () {
+                  console.log("Email sent!");
           },
           error: function (xhr,status,error) {
                   alert(error);
           },
         });
       }
+      
 
     });
   </script>

@@ -147,7 +147,7 @@
             success: function() {
               console.log('Information has been updated!');
             }, error: function(error) {
-                  alert("update" +error);
+                  console.log("update error " + error.message);
             }
          });
         } else {
