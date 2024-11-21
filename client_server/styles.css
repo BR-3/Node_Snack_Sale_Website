@@ -66,8 +66,7 @@ ul.slick-dots {
 
 #snackDataList {
     display: flex;
-    flex-wrap: wrap; /* Allow items to wrap to next line if needed */
-    /* Optional: Set width and gap between items */
+    flex-wrap: wrap;
   }
   
 #snackDataList div {
